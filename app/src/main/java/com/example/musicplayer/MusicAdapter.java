@@ -39,9 +39,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MusicAdapter.MyHolder holder, int position) {
         holder.title.setText(arrayList.get(position).getTitle());
-        holder.album.setText(arrayList.get(position).getAlbum());
+        if (arrayList.get(position).getArtist().equals("<unknown>")){
+            arrayList.get(position).setArtist("Nghệ sĩ không xác định");
+        }
+        holder.artist.setText(arrayList.get(position).getArtist());
         holder.duration.setText(arrayList.get(position).formatDuration(arrayList.get(position).getDuration()));
         Glide.with(context)
+                .asBitmap()
                 .load(arrayList.get(position).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(holder.image);
@@ -66,14 +70,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         MusicViewBinding binding;
         RelativeLayout root;
         TextView title;
-        TextView album;
+        TextView artist;
         ImageView image;
         TextView duration;
         public MyHolder(@NonNull MusicViewBinding musicViewBinding) {
             super(musicViewBinding.getRoot());
             this.binding = musicViewBinding;
             title = binding.songName;
-            album = binding.songAlbum;
+            artist = binding.songArtist;
             image = binding.imageMV;
             duration = binding.songDuration;
             root = binding.getRoot();

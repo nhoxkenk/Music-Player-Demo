@@ -68,7 +68,17 @@
         android:gravity="center"
         android:text="@string/song_name"
         android:textColor="@color/black"
-        android:textSize="18dp" />
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/songArtistNamePA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:text="Artist Name"
+        android:textColor="@color/gray"
+        android:textSize="16dp" />
 
     <!--    Direction Button-->
 

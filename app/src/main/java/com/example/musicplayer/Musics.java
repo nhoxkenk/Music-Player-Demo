@@ -1,5 +1,6 @@
 package com.example.musicplayer;
 
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
 import java.util.Random;
@@ -12,9 +13,9 @@ public class Musics {
     private String artist;
     private long duration = 0;
     private String path;
-    private String artUri;
+    private Bitmap artUri;
 
-    public Musics(String id, String title, String album, String artist, long duration, String path, String artUri) {
+    public Musics(String id, String title, String album, String artist, long duration, String path, Bitmap artUri) {
         this.id = id;
         this.title = title;
         this.album = album;
@@ -130,11 +131,11 @@ public class Musics {
         this.path = path;
     }
 
-    public String getArtUri() {
+    public Bitmap getArtUri() {
         return artUri;
     }
 
-    public void setArtUri(String artUri) {
+    public void setArtUri(Bitmap artUri) {
         this.artUri = artUri;
     }
 

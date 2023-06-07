@@ -131,10 +131,12 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
 
     private void setLayout(){
         Glide.with(this)
+                .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(binding.songImgPA);
         binding.songNamePA.setText(musicListPA.get(songPosition).getTitle());
+        binding.songArtistNamePA.setText(musicListPA.get(songPosition).getArtist());
 
         //vẫn giữ tính năng repeat khi kết thúc bài hát
         if(isRepeat){

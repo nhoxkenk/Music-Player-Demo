@@ -5,7 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
@@ -168,9 +169,16 @@ public class MainActivity extends AppCompatActivity {
                     @SuppressLint("Range") String pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                     @SuppressLint("Range") long durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                     @SuppressLint("Range") String albumIdC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-                    Uri uri = Uri.parse("content://media/external/audio/albumart");
-                    String artUri = Uri.withAppendedPath(uri, albumIdC).toString();
-                    Musics music = new Musics(idC, titleC, albumC, artistC, durationC, pathC, artUri);
+                    byte[] imgArt = Musics.getImgArt(pathC);
+                    Bitmap image;
+                    if(imgArt != null){
+                        image = BitmapFactory.decodeByteArray(imgArt, 0, imgArt.length);
+                    }else {
+                        image = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_splash_screen);
+                    }
+//                    Uri uri = Uri.parse("content://media/external/audio/albumart");
+//                    String artUri = Uri.withAppendedPath(uri, albumIdC).toString();
+                    Musics music = new Musics(idC, titleC, albumC, artistC, durationC, pathC, image);
                     File file = new File(music.getPath());
                     if(file.exists()){
                         musics.add(music);

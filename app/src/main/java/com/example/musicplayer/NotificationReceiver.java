@@ -64,6 +64,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         PlayerActivity.musicService.createMediaPlayerInNotification(context);
 
         Glide.with(context)
+                .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(binding.songImgPA);
