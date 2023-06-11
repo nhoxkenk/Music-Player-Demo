@@ -27,7 +27,7 @@
                 android:contentDescription="@string/shuffleBtn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:drawableTop="@drawable/shuffle_icon"
-                android:text="@string/shuffleBtn"
+                android:text="Shuffle all"
                 android:textAllCaps="false"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -68,7 +68,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/musicRV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
 
     </LinearLayout>
 

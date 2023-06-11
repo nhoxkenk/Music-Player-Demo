@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
@@ -14,12 +15,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.musicplayer.databinding.ActivityMainBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,7 +76,25 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.navExit:
-                    System.exit(0);
+                    //Material Alert Dialog
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+                    builder.setTitle("Exit")
+                            .setMessage("Do you want to close app?")
+                            .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                if(PlayerActivity.musicService != null){
+                                    PlayerActivity.musicService.stopForeground(true);
+                                    PlayerActivity.musicService.mediaPlayer.release();
+                                    PlayerActivity.musicService = null;
+                                }
+                                System.exit(1);
+                            })
+                            .setNegativeButton("No", (dialogInterface, i) -> {
+                                dialogInterface.dismiss();
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                     break;
                 default:
                     break;
