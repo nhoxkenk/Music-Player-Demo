@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     //Create Binding Object
-    private ActivityMainBinding binding;
+    public static ActivityMainBinding binding;
     private ActionBarDrawerToggle toggle;
 
     private MusicAdapter musicAdapter;
@@ -108,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean requestRuntimePermission(){
-        if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "already granted permission!", Toast.LENGTH_SHORT).show();
             return true;
         }else{
-            ActivityCompat.requestPermissions(this,new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this,new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE }, MainActivity.STORAGE_PERMISSION_CODE);
             return false;
         }
     }
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 initializeMusics();
             }else{
                 ActivityCompat.requestPermissions(this,new String[]{
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
             }
         }
     }
