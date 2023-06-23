@@ -49,6 +49,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         musicService.mediaPlayer.start();
         musicService.showNotification(R.drawable.pause_icon);
         binding.playPauseBtn.setIconResource(R.drawable.pause_icon);
+        NowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.pause_icon);
     }
 
     private void pauseMusic(){
@@ -56,20 +57,26 @@ public class NotificationReceiver extends BroadcastReceiver {
         musicService.mediaPlayer.pause();
         musicService.showNotification(R.drawable.play_icon);
         binding.playPauseBtn.setIconResource(R.drawable.play_icon);
+        NowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.play_icon);
     }
 
     private void prevNextSong(boolean increment, Context context){
         Musics.setSongPosition(increment);
-
         PlayerActivity.musicService.createMediaPlayerInNotification(context);
-
+        //for Player Activity
         Glide.with(context)
                 .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(binding.songImgPA);
         PlayerActivity.binding.songNamePA.setText(musicListPA.get(songPosition).getTitle());
-
+        //for Now Playing fragment
+        Glide.with(context)
+                .asBitmap()
+                .load(musicListPA.get(songPosition).getArtUri())
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
+                .into(NowPlaying.binding.songImgNP);
+        NowPlaying.binding.songNameNP.setText(musicListPA.get(songPosition).getTitle());
         playMusic();
     }
 

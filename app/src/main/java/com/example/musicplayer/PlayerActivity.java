@@ -44,10 +44,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         setTheme(R.style.coolPink);
         binding = ActivityPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        //Starting Background Service
-        Intent intentService = new Intent(this,MusicService.class);
-        bindService(intentService,this, BIND_AUTO_CREATE);
-        startService(intentService);
 
         Intent intent = getIntent();
         initializeLayout(intent);
@@ -134,17 +130,17 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
-                .into(binding.songImgPA);
-        binding.songNamePA.setText(musicListPA.get(songPosition).getTitle());
-        binding.songArtistNamePA.setText(musicListPA.get(songPosition).getArtist());
+                .into(PlayerActivity.binding.songImgPA);
+        PlayerActivity.binding.songNamePA.setText(musicListPA.get(songPosition).getTitle());
+        PlayerActivity.binding.songArtistNamePA.setText(musicListPA.get(songPosition).getArtist());
 
         //vẫn giữ tính năng repeat khi kết thúc bài hát
         if(isRepeat){
-            binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_200));
+            PlayerActivity.binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_200));
         }
 
         if(isShuffle){
-            binding.shuffleBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_200));
+            PlayerActivity.binding.shuffleBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_200));
         }
     }
 
@@ -186,15 +182,33 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
 
     private void initializeLayout(Intent intent){
         songPosition = intent.getIntExtra("index", 0);
+        Intent intentService;
         switch (intent.getStringExtra("class")){
             case "MusicAdapter":
+                //Starting Background Service
+                intentService = new Intent(this,MusicService.class);
+                bindService(intentService,this, BIND_AUTO_CREATE);
+                startService(intentService);
+
                 musicListPA.addAll(MainActivity.musics);
                 setLayout();
                 break;
             case "MainActivity":
+                //Starting Background Service
+                intentService = new Intent(this,MusicService.class);
+                bindService(intentService,this, BIND_AUTO_CREATE);
+                startService(intentService);
+
                 musicListPA.addAll(MainActivity.musics);
                 Collections.shuffle(musicListPA);
                 setLayout();
+                break;
+            case "NowPlaying":
+                setLayout();
+                binding.seekbarPAStart.setText(Musics.formatDuration(Long.valueOf(musicService.mediaPlayer.getCurrentPosition())));
+                binding.seekbarPAEnd.setText(Musics.formatDuration(Long.valueOf(musicService.mediaPlayer.getDuration())));
+                binding.seekbarPA.setProgress(musicService.mediaPlayer.getCurrentPosition());
+                binding.seekbarPA.setMax(musicService.mediaPlayer.getDuration());
                 break;
             default:
                 break;
@@ -246,6 +260,14 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         Musics.setSongPositionForFuncButton(true);
         setLayout();
         createMediaPlayer();
+
+        NowPlaying.binding.songNameNP.setSelected(true);
+        Glide.with(this)
+                .asBitmap()
+                .load(musicListPA.get(songPosition).getArtUri())
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
+                .into(NowPlaying.binding.songImgNP);
+        NowPlaying.binding.songNameNP.setText(musicListPA.get(songPosition).getTitle());
     }
 
 }
