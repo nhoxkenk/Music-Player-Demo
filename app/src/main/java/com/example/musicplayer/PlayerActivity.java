@@ -126,7 +126,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void setLayout(){
-        Glide.with(this)
+        Glide.with(getBaseContext())
                 .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
@@ -262,7 +262,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         createMediaPlayer();
 
         NowPlaying.binding.songNameNP.setSelected(true);
-        Glide.with(this)
+        Glide.with(getBaseContext())
                 .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
