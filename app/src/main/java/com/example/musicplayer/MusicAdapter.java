@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
 
     private Context context;
-    private ArrayList<Musics> arrayList = new ArrayList<>();
+    private ArrayList<Musics> arrayList;
 
     public MusicAdapter(Context context, ArrayList<Musics> arrayList) {
         this.context = context;
@@ -57,14 +57,19 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(holder.image);
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.root.setOnClickListener(view -> {
+            if(MainActivity.search){
                 Intent intent = new Intent(context, PlayerActivity.class);
-                intent.putExtra("index",holder.getAdapterPosition());
+                intent.putExtra("index",position);
+                intent.putExtra("class", "MusicAdapterSearch");
+                ContextCompat.startActivity(context, intent, null);
+            }else{
+                Intent intent = new Intent(context, PlayerActivity.class);
+                intent.putExtra("index",position);
                 intent.putExtra("class", "MusicAdapter");
                 ContextCompat.startActivity(context, intent, null);
             }
+
         });
 
         holder.moreIcon.setOnClickListener(view -> {
@@ -108,6 +113,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
     @Override
     public int getItemCount() {
         return arrayList.size();
+    }
+
+    public void updateMusicList(ArrayList<Musics> searchList){
+        arrayList = new ArrayList<>();
+        arrayList.addAll(searchList);
+        MainActivity.binding.totalSongs.setText("Total Songs: " + getItemCount());
+        notifyDataSetChanged();
     }
 
     public class MyHolder extends RecyclerView.ViewHolder{

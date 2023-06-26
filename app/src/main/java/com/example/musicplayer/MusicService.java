@@ -153,13 +153,15 @@ public class MusicService extends Service {
     }
 
     public void seekbarSetup(){
-        runnable = new Runnable() {
-            @Override
-            public void run() {
+        runnable = () -> {
+           try{
                 PlayerActivity.binding.seekbarPAStart.setText(Musics.formatDuration(Long.valueOf(musicService.mediaPlayer.getCurrentPosition())));
                 PlayerActivity.binding.seekbarPA.setProgress(mediaPlayer.getCurrentPosition());
                 new Handler(Looper.getMainLooper()).postDelayed(runnable, 200);
-            }
+            } catch (Exception e){
+               Toast.makeText(this, "ERROR: " + e, Toast.LENGTH_SHORT).show();
+           }
+
         };
         new Handler(Looper.getMainLooper()).postDelayed(runnable, 0);
     }

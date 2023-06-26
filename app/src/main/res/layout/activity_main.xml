@@ -42,7 +42,7 @@
                     android:layout_margin="2dp"
                     android:layout_weight="1"
                     android:contentDescription="@string/favoriteBtn"
-                    android:drawableTop="@drawable/music_icon"
+                    android:drawableTop="@drawable/favorite_icon"
                     android:text="@string/favoriteBtn"
                     android:textAllCaps="false" />
 
@@ -54,7 +54,7 @@
                     android:layout_margin="2dp"
                     android:layout_weight="1"
                     android:contentDescription="@string/playListBtn"
-                    android:drawableTop="@drawable/favorite_icon"
+                    android:drawableTop="@drawable/music_icon"
                     android:text="@string/playListBtn"
                     android:textAllCaps="false" />
 
