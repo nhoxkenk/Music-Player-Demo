@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 1;
 
     public static ArrayList<Musics> musics = new ArrayList<>();
-    public static ArrayList<Musics> musicsSearch;
-    public static boolean search = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeMusics(){
-        search = false;
         musics = getAllAudio();
+
         //load music
         binding.musicRV.setHasFixedSize(true);
         binding.musicRV.setItemViewCacheSize(13);
@@ -223,34 +220,5 @@ public class MainActivity extends AppCompatActivity {
             PlayerActivity.musicService = null;
             System.exit(1);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_view, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.searchView).getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                musicsSearch = new ArrayList<>();
-                if(newText != null){
-                    String userInput = newText.toLowerCase();
-                    for(int i = 0; i <  musics.size(); i++){
-                        if(musics.get(i).getTitle().toLowerCase().contains(userInput)){
-                            musicsSearch.add(musics.get(i));
-                        }
-                    }
-                    search = true;
-                    musicAdapter.updateMusicList(musicsSearch);
-                }
-                return true;
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
     }
 }

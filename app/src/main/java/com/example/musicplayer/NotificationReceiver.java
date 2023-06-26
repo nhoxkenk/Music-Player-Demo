@@ -33,11 +33,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 break;
 
             case "exit":
-                if(PlayerActivity.musicService != null){
-                    PlayerActivity.musicService.stopForeground(true);
-                    PlayerActivity.musicService.mediaPlayer.release();
-                    PlayerActivity.musicService = null;
-                }
+                PlayerActivity.musicService.stopForeground(true);
+                PlayerActivity.musicService.mediaPlayer.release();
+                PlayerActivity.musicService = null;
                 System.exit(1);
                 break;
 

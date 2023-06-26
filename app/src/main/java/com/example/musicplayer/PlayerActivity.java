@@ -3,26 +3,19 @@ package com.example.musicplayer;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.media.audiofx.AudioEffect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.databinding.ActivityPlayerBinding;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,9 +36,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
 
     public static boolean isShuffle = false;
 
-    public static boolean Min15 = false;
-    public static boolean Min30 = false;
-    public static boolean Min60 = false;
    // @NonNull public static MediaPlayer mediaPlayer = null;
 
     @Override
@@ -108,51 +98,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 }
         });
 
-        binding.equalizerBtnPA.setOnClickListener(view -> {
-            try {
-                Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicService.mediaPlayer.getAudioSessionId());
-                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getBaseContext().getPackageName());
-                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                startActivityForResult(eqIntent, 13);
-            }catch (Exception e){
-                Toast.makeText(this, "Equalizer Feature not Supported!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        binding.timerBtnPA.setOnClickListener(view -> {
-            boolean timer = Min15 || Min30 || Min60;
-            if(!timer){
-                showBottomSheetDialog();
-            }else{
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-                builder.setTitle("Stop timer")
-                        .setMessage("Do you want to stop timer?")
-                        .setPositiveButton("Yes", (dialogInterface, i) -> {
-                            Min15 = false;
-                            Min30 = false;
-                            Min60 = false;
-                            binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.cool_pink));
-                        })
-                        .setNegativeButton("No", (dialogInterface, i) -> {
-                            dialogInterface.dismiss();
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-            }
-
-        });
-
-        binding.shareBtnPA.setOnClickListener(view -> {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.setType("audio/*");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(musicListPA.get(songPosition).getPath()));
-            startActivity(Intent.createChooser(shareIntent, "Sharing music file!"));
-        });
-
         //SeekBar part
         binding.seekbarPA.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -197,10 +142,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         if(isShuffle){
             PlayerActivity.binding.shuffleBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_200));
         }
-
-        if(Min15 || Min30||Min60){
-            binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500));
-        }
     }
 
     private void createMediaPlayer(){
@@ -243,21 +184,12 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         songPosition = intent.getIntExtra("index", 0);
         Intent intentService;
         switch (intent.getStringExtra("class")){
-            case "MusicAdapterSearch":
-                //Starting Background Service
-                intentService = new Intent(this,MusicService.class);
-                bindService(intentService,this, BIND_AUTO_CREATE);
-                startService(intentService);
-                musicListPA = new ArrayList<>();
-                musicListPA.addAll(MainActivity.musicsSearch);
-                setLayout();
-                break;
             case "MusicAdapter":
                 //Starting Background Service
                 intentService = new Intent(this,MusicService.class);
                 bindService(intentService,this, BIND_AUTO_CREATE);
                 startService(intentService);
-                musicListPA = new ArrayList<>();
+
                 musicListPA.addAll(MainActivity.musics);
                 setLayout();
                 break;
@@ -266,7 +198,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 intentService = new Intent(this,MusicService.class);
                 bindService(intentService,this, BIND_AUTO_CREATE);
                 startService(intentService);
-                musicListPA = new ArrayList<>();
+
                 musicListPA.addAll(MainActivity.musics);
                 Collections.shuffle(musicListPA);
                 setLayout();
@@ -338,77 +270,4 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         NowPlaying.binding.songNameNP.setText(musicListPA.get(songPosition).getTitle());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 13 || requestCode == RESULT_OK){
-            return;
-        }
-    }
-
-    private void showBottomSheetDialog(){
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(R.layout.bottom_sheet_dialog);
-        dialog.show();
-        dialog.findViewById(R.id.min15).setOnClickListener(view -> {
-            Toast.makeText(this, "Music will stop after 15 minutes", Toast.LENGTH_SHORT).show();
-            binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500));
-            Min15 = true;
-            Thread thread = new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    if (Min15) {
-                        PlayerActivity.musicService.stopForeground(true);
-                        PlayerActivity.musicService.mediaPlayer.release();
-                        PlayerActivity.musicService = null;
-                        System.exit(1);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
-            dialog.dismiss();
-        });
-        dialog.findViewById(R.id.min30).setOnClickListener(view -> {
-            Toast.makeText(this, "Music will stop after 30 minutes", Toast.LENGTH_SHORT).show();
-            binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500));
-            Min30 = true;
-            Thread thread = new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    if (Min30) {
-                        PlayerActivity.musicService.stopForeground(true);
-                        PlayerActivity.musicService.mediaPlayer.release();
-                        PlayerActivity.musicService = null;
-                        System.exit(1);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
-            dialog.dismiss();
-        });
-        dialog.findViewById(R.id.min60).setOnClickListener(view -> {
-            Toast.makeText(this, "Music will stop after 60 minutes", Toast.LENGTH_SHORT).show();
-            binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500));
-            Min60= true;
-            Thread thread = new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    if (Min60) {
-                        PlayerActivity.musicService.stopForeground(true);
-                        PlayerActivity.musicService.mediaPlayer.release();
-                        PlayerActivity.musicService = null;
-                        System.exit(1);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
-            dialog.dismiss();
-        });
-    }
 }
