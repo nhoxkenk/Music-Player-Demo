@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
 
     private Context context;
-    private ArrayList<Musics> arrayList = new ArrayList<>();
+    private ArrayList<Musics> arrayList;
 
     public MusicAdapter(Context context, ArrayList<Musics> arrayList) {
         this.context = context;
@@ -57,14 +57,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(holder.image);
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, PlayerActivity.class);
-                intent.putExtra("index",holder.getAdapterPosition());
-                intent.putExtra("class", "MusicAdapter");
-                ContextCompat.startActivity(context, intent, null);
+        holder.root.setOnClickListener(view -> {
+            if(MainActivity.search){
+                sendIntent("MusicAdapterSearch", position);
+            }else{
+                sendIntent("MusicAdapter", position);
             }
+
         });
 
         holder.moreIcon.setOnClickListener(view -> {
@@ -83,6 +82,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         });
     }
 
+    private void sendIntent(String ref, int pos){
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.putExtra("index",pos);
+        intent.putExtra("class", ref);
+        ContextCompat.startActivity(context, intent, null);
+    }
+
     private void deleteSong(int position, View view){
         Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 Long.parseLong(arrayList.get(position).getId()));
@@ -90,13 +96,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         File file = new File(arrayList.get(position).getPath());
         boolean deleted = file.delete();
         //if(deleted){
-            context.getContentResolver().delete(uri, null, null);
-            arrayList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, arrayList.size());
-            MainActivity.binding.totalSongs.setText("Total Songs: " + getItemCount());
-            Snackbar.make(view, "Song deleted: ", Snackbar.LENGTH_SHORT)
-                    .show();
+        context.getContentResolver().delete(uri, null, null);
+        arrayList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, arrayList.size());
+        MainActivity.binding.totalSongs.setText("Total Songs: " + getItemCount());
+        Snackbar.make(view, "Song deleted: ", Snackbar.LENGTH_SHORT)
+                .show();
 //        }
 //        else{
 //            //maybe in sd card
@@ -108,6 +114,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
     @Override
     public int getItemCount() {
         return arrayList.size();
+    }
+
+    public void updateMusicList(ArrayList<Musics> searchList){
+        arrayList = new ArrayList<>();
+        arrayList.addAll(searchList);
+        MainActivity.binding.totalSongs.setText("Total Songs: " + getItemCount());
+        notifyDataSetChanged();
     }
 
     public class MyHolder extends RecyclerView.ViewHolder{
