@@ -151,6 +151,7 @@ public class MusicService extends Service {
             PlayerActivity.binding.seekbarPAEnd.setText(Musics.formatDuration(Long.valueOf(musicService.mediaPlayer.getDuration())));
             PlayerActivity.binding.seekbarPA.setProgress(0);
             PlayerActivity.binding.seekbarPA.setMax(musicService.mediaPlayer.getDuration());
+            PlayerActivity.nowPlayingId = PlayerActivity.musicListPA.get(PlayerActivity.songPosition).getId();
         }catch (Exception e){
             Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
         }

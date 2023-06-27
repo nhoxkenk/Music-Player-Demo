@@ -80,6 +80,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .into(NowPlaying.binding.songImgNP);
         NowPlaying.binding.songNameNP.setText(musicListPA.get(songPosition).getTitle());
         playMusic();
+        PlayerActivity.fIndex = Musics.favoriteChecked(musicListPA.get(songPosition).getId());
+        if(PlayerActivity.isFavorite) binding.favoriteBtnPA.setImageResource(R.drawable.favorite_icon);
+        else binding.favoriteBtnPA.setImageResource(R.drawable.favorite_empty_icon);
     }
 
 

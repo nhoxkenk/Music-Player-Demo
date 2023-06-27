@@ -46,6 +46,9 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     public static boolean Min15 = false;
     public static boolean Min30 = false;
     public static boolean Min60 = false;
+    public static String nowPlayingId = "";
+    public static boolean isFavorite = false;
+    public static int fIndex = -1;
     // @NonNull public static MediaPlayer mediaPlayer = null;
 
     @Override
@@ -153,6 +156,18 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             startActivity(Intent.createChooser(shareIntent, "Sharing music file!"));
         });
 
+        binding.favoriteBtnPA.setOnClickListener(view -> {
+            if(isFavorite){
+                isFavorite = false;
+                binding.favoriteBtnPA.setImageResource(R.drawable.favorite_empty_icon);
+                FavoriteActivity.favoriteSongs.remove(fIndex);
+            }else{
+                isFavorite = true;
+                binding.favoriteBtnPA.setImageResource(R.drawable.favorite_icon);
+                FavoriteActivity.favoriteSongs.add(musicListPA.get(songPosition));
+            }
+        });
+
         //SeekBar part
         binding.seekbarPA.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -181,6 +196,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void setLayout(){
+        fIndex = Musics.favoriteChecked(musicListPA.get(songPosition).getId());
         Glide.with(getBaseContext())
                 .asBitmap()
                 .load(musicListPA.get(songPosition).getArtUri())
@@ -201,6 +217,12 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         if(Min15 || Min30||Min60){
             binding.timerBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500));
         }
+
+        if(isFavorite){
+            binding.favoriteBtnPA.setImageResource(R.drawable.favorite_icon);
+        }else
+            binding.favoriteBtnPA.setImageResource(R.drawable.favorite_empty_icon);
+
     }
 
     private void createMediaPlayer(){
@@ -233,7 +255,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             binding.seekbarPA.setMax(musicService.mediaPlayer.getDuration());
             //khi mediaPlayer chạy hết bài hát
             musicService.mediaPlayer.setOnCompletionListener(this);
-
+            nowPlayingId = musicListPA.get(songPosition).getId();
         } catch (Exception e){
             Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
         }
@@ -243,6 +265,15 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         songPosition = intent.getIntExtra("index", 0);
         Intent intentService;
         switch (intent.getStringExtra("class")){
+            case "FavoriteAdapter":
+                //Starting Background Service
+                intentService = new Intent(this,MusicService.class);
+                bindService(intentService,this, BIND_AUTO_CREATE);
+                startService(intentService);
+                musicListPA = new ArrayList<>();
+                musicListPA.addAll(FavoriteActivity.favoriteSongs);
+                setLayout();
+                break;
             case "MusicAdapterSearch":
                 //Starting Background Service
                 intentService = new Intent(this,MusicService.class);

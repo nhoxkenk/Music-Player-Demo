@@ -60,7 +60,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         holder.root.setOnClickListener(view -> {
             if(MainActivity.search){
                 sendIntent("MusicAdapterSearch", position);
-            }else{
+            }if(arrayList.get(position).getId() == PlayerActivity.nowPlayingId){
+                sendIntent("NowPlaying", PlayerActivity.songPosition);
+            }
+            else{
                 sendIntent("MusicAdapter", position);
             }
 

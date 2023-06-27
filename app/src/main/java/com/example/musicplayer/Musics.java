@@ -144,4 +144,15 @@ public class Musics {
         retriever.setDataSource(path);
         return retriever.getEmbeddedPicture();
     }
+
+    public static int favoriteChecked(String id){
+        PlayerActivity.isFavorite = false;
+        for(int i = 0; i < FavoriteActivity.favoriteSongs.size(); i++){
+            if(id == FavoriteActivity.favoriteSongs.get(i).getId()){
+                PlayerActivity.isFavorite = true;
+                return i;
+            }
+        }
+        return -1;
+    }
 }
