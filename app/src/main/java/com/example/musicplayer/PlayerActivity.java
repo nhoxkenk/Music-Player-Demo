@@ -49,6 +49,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     public static String nowPlayingId = "";
     public static boolean isFavorite = false;
     public static int fIndex = -1;
+    FavoriteSongDB favoriteSongDB = new FavoriteSongDB(this);
     // @NonNull public static MediaPlayer mediaPlayer = null;
 
     @Override
@@ -161,10 +162,12 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 isFavorite = false;
                 binding.favoriteBtnPA.setImageResource(R.drawable.favorite_empty_icon);
                 FavoriteActivity.favoriteSongs.remove(fIndex);
+                favoriteSongDB.deleteMusic(musicListPA.get(songPosition).getId());
             }else{
                 isFavorite = true;
                 binding.favoriteBtnPA.setImageResource(R.drawable.favorite_icon);
                 FavoriteActivity.favoriteSongs.add(musicListPA.get(songPosition));
+                favoriteSongDB.addMusic(musicListPA.get(songPosition));
             }
         });
 

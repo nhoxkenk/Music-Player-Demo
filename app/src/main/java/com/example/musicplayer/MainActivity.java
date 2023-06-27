@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Musics> musics = new ArrayList<>();
     public static ArrayList<Musics> musicsSearch;
     public static boolean search = false;
+
+    FavoriteSongDB favoriteSongDB = new FavoriteSongDB(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestRuntimePermission()){
             initializeMusics();
+            FavoriteActivity.favoriteSongs = new ArrayList<>();
+            //Toast.makeText(this, favoriteSongDB.numberOfRows(), Toast.LENGTH_SHORT).show();
+            FavoriteActivity.favoriteSongs.addAll(favoriteSongDB.getAllMusics());
+            //load
+//            SharedPreferences editor = getSharedPreferences("FAVORITE", MODE_PRIVATE);
+//            String jsonString = editor.getString("FAVORITE", null);
+//            Type typeToken = new TypeToken<ArrayList<Musics>>(){}.getType();
+//
+//            if(jsonString!= null){
+//                ArrayList<Musics> data = new GsonBuilder().create().fromJson(jsonString, typeToken);
+//                FavoriteActivity.favoriteSongs.addAll(data);
+//            }
         }
 
         binding.shuffleBtn.setOnClickListener(view -> {
@@ -215,6 +229,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //share preferences
+//        SharedPreferences.Editor editor = getSharedPreferences("FAVORITE", MODE_PRIVATE).edit();
+//        String jsonString = new GsonBuilder().create().toJson(FavoriteActivity.favoriteSongs);
+//        editor.putString("FAVORITE", jsonString);
+//        editor.apply();
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(!PlayerActivity.isPLaying && PlayerActivity.musicService != null){
@@ -223,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
             PlayerActivity.musicService = null;
             System.exit(1);
         }
+        //favoriteSongDB.addMusics(FavoriteActivity.favoriteSongs);
     }
 
     @Override
