@@ -277,6 +277,8 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 binding.seekbarPAEnd.setText(Musics.formatDuration(Long.valueOf(musicService.mediaPlayer.getDuration())));
                 binding.seekbarPA.setProgress(musicService.mediaPlayer.getCurrentPosition());
                 binding.seekbarPA.setMax(musicService.mediaPlayer.getDuration());
+                if(isPLaying) binding.playPauseBtn.setIconResource(R.drawable.pause_icon);
+                else binding.playPauseBtn.setIconResource(R.drawable.play_icon);
                 break;
             default:
                 break;
@@ -356,7 +358,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             Min15 = true;
             Thread thread = new Thread(() -> {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep((long) 5000);
                     if (Min15) {
                         PlayerActivity.musicService.stopForeground(true);
                         PlayerActivity.musicService.mediaPlayer.release();
@@ -376,7 +378,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             Min30 = true;
             Thread thread = new Thread(() -> {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep((long)5000);
                     if (Min30) {
                         PlayerActivity.musicService.stopForeground(true);
                         PlayerActivity.musicService.mediaPlayer.release();
@@ -396,7 +398,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             Min60= true;
             Thread thread = new Thread(() -> {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep((long)5000);
                     if (Min60) {
                         PlayerActivity.musicService.stopForeground(true);
                         PlayerActivity.musicService.mediaPlayer.release();

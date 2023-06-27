@@ -52,6 +52,9 @@ public class MusicService extends Service {
 
     public void showNotification(int playPauseBtn){
 
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        PendingIntent contextIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
         //Thực hiện việc tạo các intent để gửi đến cho Broadcast receiver để thực hiện các action cho notification
 
         Intent prevIntent = new Intent(getBaseContext(), NotificationReceiver.class).setAction(ApplicationClass.PREVIOUS);
@@ -76,6 +79,7 @@ public class MusicService extends Service {
         }
 
         Notification notification = new NotificationCompat.Builder(getBaseContext(), ApplicationClass.CHANNEL_ID)
+                .setContentIntent(contextIntent)
                 .setContentTitle(PlayerActivity.musicListPA.get(PlayerActivity.songPosition).getTitle())
                 .setContentText(PlayerActivity.musicListPA.get(PlayerActivity.songPosition).getArtist())
                 .setSmallIcon(R.drawable.music_note_icon)
