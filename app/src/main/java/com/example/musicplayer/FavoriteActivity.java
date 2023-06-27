@@ -1,6 +1,8 @@
 package com.example.musicplayer;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,5 +32,14 @@ public class FavoriteActivity extends AppCompatActivity {
         binding.favoriteRV.setLayoutManager(new GridLayoutManager(this, 4));
         favoriteAdapter = new FavoriteAdapter(FavoriteActivity.this, favoriteSongs);
         binding.favoriteRV.setAdapter(favoriteAdapter);
+        if(favoriteSongs.size() < 1){
+            binding.shuffleBtnFA.setVisibility(View.INVISIBLE);
+        }
+        binding.shuffleBtnFA.setOnClickListener(view -> {
+            Intent intent = new Intent(this, PlayerActivity.class);
+            intent.putExtra("index",0);
+            intent.putExtra("class", "FavoriteShuffle");
+            startActivity(intent);
+        });
     }
 }

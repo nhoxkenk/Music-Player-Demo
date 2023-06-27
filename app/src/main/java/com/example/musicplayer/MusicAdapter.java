@@ -49,12 +49,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         if (arrayList.get(position).getArtist().equals("<unknown>")){
             arrayList.get(position).setArtist("Nghệ sĩ không xác định");
         }
-        for(int i = 0; i < FavoriteActivity.favoriteSongs.size(); i++){
-            if(FavoriteActivity.favoriteSongs.get(i).getId() == arrayList.get(position).getId()){
-                PlayerActivity.isFavorite = true;
-                PlayerActivity.binding.favoriteBtnPA.setImageResource(R.drawable.favorite_icon);
-            }
-        }
+
         holder.artist.setText(arrayList.get(position).getArtist());
         holder.duration.setText(arrayList.get(position).formatDuration(arrayList.get(position).getDuration()));
         Glide.with(context)
@@ -66,7 +61,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         holder.root.setOnClickListener(view -> {
             if(MainActivity.search){
                 sendIntent("MusicAdapterSearch", position);
-            }if(arrayList.get(position).getId() == PlayerActivity.nowPlayingId){
+            }else if(arrayList.get(position).getId() == PlayerActivity.nowPlayingId){
                 sendIntent("NowPlaying", PlayerActivity.songPosition);
             }
             else{
