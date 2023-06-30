@@ -30,10 +30,24 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
 
     private Context context;
     private ArrayList<Musics> arrayList;
+    boolean playListDetails = false;
+    boolean selectionActivity = false;
 
     public MusicAdapter(Context context, ArrayList<Musics> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
+    }
+
+    public MusicAdapter(Context context, ArrayList<Musics> arrayList, boolean playlistDetails) {
+        this.context = context;
+        this.arrayList = arrayList;
+        this.playListDetails = playlistDetails;
+    }
+
+    public MusicAdapter(Context context,  boolean selectionActivity, ArrayList<Musics> arrayList) {
+        this.context = context;
+        this.arrayList = arrayList;
+        this.selectionActivity = selectionActivity;
     }
 
     @NonNull
@@ -58,17 +72,32 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_splash_screen).centerCrop())
                 .into(holder.image);
 
-        holder.root.setOnClickListener(view -> {
-            if(MainActivity.search){
-                sendIntent("MusicAdapterSearch", position);
-            }else if(arrayList.get(position).getId() == PlayerActivity.nowPlayingId){
-                sendIntent("NowPlaying", PlayerActivity.songPosition);
-            }
-            else{
-                sendIntent("MusicAdapter", position);
-            }
+        if(playListDetails){
+            holder.root.setOnClickListener(view -> {
+                sendIntent("PlaylistDetailsAdapter",position);
+            });
+        } else if (selectionActivity) {
+            holder.root.setOnClickListener(view -> {
+                if(addSong(arrayList.get(position))){
+                    holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.cool_pink));
+                }else{
+                    holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                }
+            });
+        } else{
+            holder.root.setOnClickListener(view -> {
+                if(MainActivity.search){
+                    sendIntent("MusicAdapterSearch", position);
+                }else if(arrayList.get(position).getId() == PlayerActivity.nowPlayingId){
+                    sendIntent("NowPlaying", PlayerActivity.songPosition);
+                }
+                else{
+                    sendIntent("MusicAdapter", position);
+                }
+            });
+        }
 
-        });
+
 
         holder.moreIcon.setOnClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(context, view);
@@ -124,6 +153,23 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyHolder> {
         arrayList = new ArrayList<>();
         arrayList.addAll(searchList);
         MainActivity.binding.totalSongs.setText("Total Songs: " + getItemCount());
+        notifyDataSetChanged();
+    }
+
+    public boolean addSong(Musics song){
+        for(int i = 0; i < PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist.size(); i++){
+            if(song.getId() == PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist.get(i).getId()){
+                PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist.remove(i);
+                return false;
+            }
+        }
+        PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist.add(song);
+        return true;
+    }
+
+    public void refreshPlaylist(){
+        arrayList = new ArrayList<>();
+        arrayList = PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist;
         notifyDataSetChanged();
     }
 

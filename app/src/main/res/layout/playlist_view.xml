@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp">
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/playListImg"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:src="@drawable/splash_screen"
+        app:shapeAppearanceOverlay="@style/curved"
+        android:contentDescription="Song image"/>
+
+    <TextView
+        android:id="@+id/playListName"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:text="Playlist Name"
+        android:contentDescription="Playlist Name"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="130dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"/>
+    
+    <ImageButton
+        android:id="@+id/playListDeleteBtn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/delete_icon"
+        app:tint="@color/cool_pink"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginStart="130dp"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="Playlist Delete"/>
+
+</androidx.cardview.widget.CardView>

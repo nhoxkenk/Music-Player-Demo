@@ -3,6 +3,7 @@ package com.example.musicplayer;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +15,17 @@ public class Musics {
     private long duration = 0;
     private String path;
     private Bitmap artUri;
+
+    static class Playlist{
+        String name;
+        ArrayList<Musics> playlist = new ArrayList<>();
+        String createBy;
+        String createOn;
+    }
+
+    static class MusicPlaylist{
+        ArrayList<Playlist> ref = new ArrayList<>();
+    }
 
     public Musics(String id, String title, String album, String artist, long duration, String path, Bitmap artUri) {
         this.id = id;

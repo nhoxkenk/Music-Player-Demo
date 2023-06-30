@@ -268,6 +268,14 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         songPosition = intent.getIntExtra("index", 0);
         Intent intentService;
         switch (intent.getStringExtra("class")){
+            case "PlaylistDetailsAdapter":
+                intentService = new Intent(this,MusicService.class);
+                bindService(intentService,this, BIND_AUTO_CREATE);
+                startService(intentService);
+                musicListPA = new ArrayList<>();
+                musicListPA.addAll(PlaylistActivity.musicPlaylist.ref.get(PlaylistDetails.currentPlaylistPosition).playlist);
+                setLayout();
+                break;
             case "FavoriteShuffle":
                 //Starting Background Service
                 intentService = new Intent(this,MusicService.class);
